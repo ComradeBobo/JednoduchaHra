@@ -3,14 +3,8 @@ var s;
 var scl = 20;
 var food;
 var score = 0;
-var eatSound;
-var deathSound;
-
-
-function preload(){
-  eatSound = loadSound("./../media/eat.mp3");
-  deathSound = loadSound("./../media/deathxd.mp3");
-}
+var audio = new Audio('./media/eat.mp3');
+var deathSound = new Audio('./media/deathxd.mp3');
 
 function setup() {
   mode = 0;
@@ -35,7 +29,7 @@ function draw() {
     s.show();
   
     if (s.eat(food)) {
-      eatSound.play();
+      audio.play();
       pickLocation();
       score++;
     }
