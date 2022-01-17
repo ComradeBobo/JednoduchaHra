@@ -9,8 +9,8 @@ var eatSound;
 var deathSound;
 
 function preload() {
-  eatSound = loadSound("media/eat.mp3");
-  deathSound = loadSound("media/deathxd.mp3");
+  eatSound = loadSound("./../media/eat.mp3");
+  deathSound = loadSound("./../media/deathxd.mp3");
 }
 
 function setup() {
