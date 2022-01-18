@@ -10,12 +10,13 @@ function setup() {
   mode = 0;
   createCanvas(560, 560);
   s = new Snake();
-  frameRate(8);
+  frameRate(9);
   pickLocation();
 }
 
 function draw() {
   clear();
+  /* Zde se zjistí zda-li hra čeká na spuštění*/
   if (mode==0){
     createCanvas(560, 560);
     background(50);
@@ -23,20 +24,21 @@ function draw() {
     fill(color(200));
     text('Press enter to start',width/ 2 - 125, height / 2);
   }
+  /* Zde dochází k případu, že hra je spuštěná */
   if (mode==1){
     background(50);
     s.update();
     s.show();
-  
+  /* V případě že snake sní jídlo vyvolám zvuk pro snězení jídla a zvolím novou lokaci pro vytvoření nového kousku jídla */
     if (s.eat(food)) {
       audio.play();
       pickLocation();
       score++;
     }
-  
     fill(255, 0, 50);
     rect(food.x, food.y, scl, scl);
-  
+
+  /* V případě že snake zemře vyvolám zvuk pro "smrt"  */
     if (s.death()) {
       deathSound.play();
       background(100, 0, 0, 200);
@@ -53,7 +55,7 @@ function draw() {
     }
   }
 }
-
+/* Funkce, která vytvoří pozici pro jídlo */
 function pickLocation() {
   var cols = floor(width / scl);
   var rows = floor(height / scl);
@@ -61,6 +63,7 @@ function pickLocation() {
   food.mult(scl);
 }
 
+/* nastavení kláves pro pohyb hada a také pro start hry pomocí klávesy ENTER */
 function keyPressed() {
   if (keyCode===ENTER){
     mode = 1;
@@ -75,13 +78,14 @@ function keyPressed() {
     s.dir(-1, 0);
   }
 }
+
+/* Funkce pro vypsání hráčova skóre */
 function statusBar() {
   strokeWeight(0);
   textSize(20);
   textStyle(BOLD);
   text(`Skóre: ${score}`, 10, height - 535);
 }
-
 
 function Snake() {
   this.x = width / 2;
@@ -95,7 +99,7 @@ function Snake() {
     this.xspeed = x;
     this.yspeed = y;
   };
-
+/* Funkce která zjistí zda-li snake snědl jídlo */
   this.eat = function (pos) {
     var d = dist(this.x, this.y, pos.x, pos.y);
     if (d < 1) {
@@ -105,11 +109,13 @@ function Snake() {
       return false;
     }
   };
-
+/* Funkce pro "smrt" našeho hada */
   this.death = function () {
+    /* "Smrt" nastává, když had narazí do zdi */
     if (this.x >= width || this.x < 0 || this.y >= height || this.y < 0) {
       return true;
     }
+    /* "Smrt" nastává, když had narazí do části svého ocasu*/
     for (var i = 0; i < this.tail.length; i++) {
       var pos = this.tail[i];
       var d = dist(this.x, this.y, pos.x, pos.y);
@@ -121,18 +127,20 @@ function Snake() {
   };
 
   this.update = function () {
+    /* Zvětšování ocasu hada */
     if (this.total === this.tail.length) {
       for (var i = 0; i < this.tail.length - 1; i++) {
         this.tail[i] = this.tail[i + 1];
       }
     }
     this.tail[this.total - 1] = createVector(this.x, this.y);
-
-    this.x = this.x + this.xspeed * scl;
-    this.y = this.y + this.yspeed * scl;
+/* Pohyb hada po ploše */
+    this.x = this.x + this.xspeed *scl;
+    this.y = this.y + this.yspeed *scl;
   };
 
   this.show = function () {
+    /* "Vykreslení hada" */
     fill(255);
     for (var i = 0; i < this.tail.length; i++) {
       rect(this.tail[i].x, this.tail[i].y, scl, scl);
